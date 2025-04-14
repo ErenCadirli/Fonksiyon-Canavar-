@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Matematik Arenası: Fonksiyonlar</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1a1a2e;
+      color: #eaeaea;
+      padding: 20px;
+    }
+    h1 {
+      color: #fddb3a;
+      text-align: center;
+    }
+    .question {
+      background: #16213e;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 10px;
+    }
+    .answers button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      background: #0f3460;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .answers button:hover {
+      background: #533483;
+    }
+    .result {
+      font-weight: bold;
+      color: #00ffab;
+      margin-top: 10px;
+    }
+    .score, .lives {
+      text-align: center;
+      font-size: 20px;
+    }
+    .game-over {
+      color: #ff4d4d;
+      font-size: 24px;
+      text-align: center;
+    }
+    .high-score {
+      text-align: center;
+      font-size: 18px;
+      color: #ffbb00;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Matematik Arenası: Fonksiyonlarla Mücadele</h1>
+
+<div class="score">Puan: <span id="score">0</span></div>
+<div class="lives">Can: <span id="lives">3</span></div>
+
+<div id="game"></div>
+
+<script>
+  const questions = [
+    {
+      text: "1. Kare Bekçisi: Bir sayının karesini bulan fonksiyon?",
+      options: [
+        { text: "f(x) = x + x", correct: false },
+        { text: "f(x) = x * x", correct: true },
+        { text: "f(x) = x - x", correct: false }
+      ]
+    },
+    {
+      text: "2. İkiz Çekiççi: Sayının iki katını bulan fonksiyon?",
+      options: [
+        { text: "f(x) = 2 * x", correct: true },
+        { text: "f(x) = x / 2", correct: false },
+        { text: "f(x) = x + 10", correct: false }
+      ]
+    },
+    {
+      text: "3. Artı Şövalyesi: Sayıya 5 ekleyen fonksiyon?",
+      options: [
+        { text: "f(x) = x + 5", correct: true },
+        { text: "f(x) = x - 5", correct: false },
+        { text: "f(x) = 5 * x", correct: false }
+      ]
+    },
+    {
+      text: "4. Mutlak Gardiyan: Mutlak değer fonksiyonu?",
+      options: [
+        { text: "f(x) = -x", correct: false },
+        { text: "f(x) = |x|", correct: true },
+        { text: "f(x) = x * x", correct: false }
+      ]
+    },
+    {
+      text: "5. Bir sayıyı 3 ile çarpan fonksiyon hangisidir?",
+      options: [
+        { text: "f(x) = 3 * x", correct: true },
+        { text: "f(x) = x / 3", correct: false },
+        { text: "f(x) = x + 3", correct: false }
+      ]
+    },
+    {
+      text: "6. Bir sayıya 10 çıkaran fonksiyon hangisidir?",
+      options: [
+        { text: "f(x) = x - 10", correct: true },
+        { text: "f(x) = x * 10", correct: false },
+        { text: "f(x) = x + 10", correct: false }
+      ]
+    },
+    {
+      text: "7. Bir sayıyı 2 ile bölen fonksiyon hangisidir?",
+      options: [
+        { text: "f(x) = x * 2", correct: false },
+        { text: "f(x) = x / 2", correct: true },
+        { text: "f(x) = x + 2", correct: false }
+      ]
+    },
+    {
+      text: "8. Bir sayının karesini alan fonksiyon hangisidir?",
+      options: [
+        { text: "f(x) = x", correct: false },
+        { text: "f(x) = x * x", correct: true },
+        { text: "f(x) = |x|", correct: false }
+      ]
+    },
+    {
+      text: "9. Bir sayının negatifini alan fonksiyon hangisidir?",
+      options: [
+        { text: "f(x) = x", correct: false },
+        { text: "f(x) = -x", correct: true },
+        { text: "f(x) = x + 1", correct: false }
+      ]
+    },
+    {
+      text: "10. Bir sayıyı 2 ile çarpıp sonra 5 ekleyen fonksiyon hangisidir?",
+      options: [
+        { text: "f(x) = 2 * x + 5", correct: true },
+        { text: "f(x) = 2 * x - 5", correct: false },
+        { text: "f(x) = x * 5 + 2", correct: false }
+      ]
+    },
+    {
+      text: "11. Bir sayıyı 4 ile bölen ve sonra 3 ekleyen fonksiyon hangisidir?",
+      options: [
+        { text: "f(x) = x / 4 + 3", correct: true },
+        { text: "f(x) = x * 4 + 3", correct: false },
+        { text: "f(x) = x / 4 - 3", correct: false }
+      ]
+    },
+    {
+      text: "12. Bir sayıyı 3 ile çarpıp sonra 7 çıkaran fonksiyon hangisidir?",
+      options: [
+        { text: "f(x) = 3 * x + 7", correct: false },
+        { text: "f(x) = 3 * x - 7", correct: true },
+        { text: "f(x) = x * 7 + 3", correct: false }
+      ]
+    },
+    {
+      text: "13. Bir sayıyı 10'a bölen fonksiyon hangisidir?",
+      options: [
+        { text: "f(x) = x / 10", correct: true },
+        { text: "f(x) = x * 10", correct: false },
+        { text: "f(x) = x + 10", correct: false }
+      ]
+    },
+    {
+      text: "14. Bir sayıya 20 ekleyen fonksiyon hangisidir?",
+      options: [
+        { text: "f(x) = x + 20", correct: true },
+        { text: "f(x) = x - 20", correct: false },
+        { text: "f(x) = x * 20", correct: false }
+      ]
+    }
+  ];
+
+  let currentQuestion = 0;
+  let score = 0;
+  let lives = 3;
+  let timer;
+  let gameDiv = document.getElementById("game");
+
+  function showQuestion(index) {
+    const q = questions[index];
+    gameDiv.innerHTML = `
+      <div class="question">
+        <h2>${q.text}</h2>
+        <div class="answers">
+          ${q.options.map((opt, i) =>
+            `<button onclick="checkAnswer(${i})">${opt.text}</button>`
+          ).join("")}
+        </div>
+        <div id="result" class="result"></div>
+      </div>
+      <div class="timer">Zaman: <span id="time">15</span> saniye</div>
+    `;
+    startTimer();
+  }
+
+  function startTimer() {
+    let timeLeft = 15;
+    const timeDisplay = document.getElementById("time");
+    timer = setInterval(function() {
+      timeLeft--;
+      timeDisplay.textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        handleWrongAnswer();
+      }
+    }, 1000);
+  }
+
+  function checkAnswer(i) {
+    clearInterval(timer);
+    const isCorrect = questions[currentQuestion].options[i].correct;
+    const resultDiv = document.getElementById("result");
+
+    if (isCorrect) {
+      score += 10;
+      resultDiv.textContent = "Doğru! Canavarı yendin!";
+      if (currentQuestion + 1 < questions.length) {
+        setTimeout(() => {
+          currentQuestion++;
+          showQuestion(currentQuestion);
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          endGame();
+        }, 1500);
+      }
+    } else {
+      handleWrongAnswer();
+    }
+  }
+
+  function handleWrongAnswer() {
+    lives--;
+    document.getElementById("lives").textContent = `Can: ${lives}`;
+    const resultDiv = document.getElementById("result");
+    resultDiv.textContent = "Yanlış cevap! Tekrar dene.";
+    if (lives <= 0) {
+      endGame();
+    } else {
+      setTimeout(() => {
+        showQuestion(currentQuestion);
+      }, 1500);
+    }
+  }
+
+  function endGame() {
+    gameDiv.innerHTML = `
+      <div class="game-over">Oyun Bitti! Skorunuz: ${score}</div>
+      <div class="high-score">En Yüksek Skor: ${localStorage.getItem('highScore') || 0}</div>
+      <button onclick="restartGame()">Tekrar Oyna</button>
+    `;
+    if (score > localStorage.getItem('highScore')) {
+      localStorage.setItem('highScore', score);
+    }
+  }
+
+  function restartGame() {
+    score = 0;
+    lives = 3;
+    currentQuestion = 0;
+    document.getElementById("score").textContent = score;
+    document.getElementById("lives").textContent = `Can: ${lives}`;
+    showQuestion(currentQuestion);
+  }
+
+  showQuestion(currentQuestion);
+</script>
+
+</body>
+</html>
